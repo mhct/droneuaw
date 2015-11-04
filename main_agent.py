@@ -4,6 +4,9 @@ sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw')
 
 import time
 import GeoFencingBehaviour
+import BatteryFailsafeBehaviour
+import ForwardBehaviour
+import SafeBehaviour
 
 # import threading
 
@@ -36,7 +39,14 @@ fence = [(51.044277, 3.718161), (51.044331, 3.718165), (51.044317, 3.718271),(51
 fenceMax = 14
 fenceMin = 4
 geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax)
+battery_failsafe = BatteryFailsafeBehaviour.BatteryFailsafeBehaviour(api.get_battery())
+forward = ForwardBehaviour.ForwardBehaviour()
 
+level1 = {geofence: forward,
+          battery_failsafe: forward,
+          forward: None}
+
+scheduler = SafeBehaviour.SafeScheduler(level1)
 
 #
 # Execution loop of the script
@@ -44,5 +54,5 @@ geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax)
 setup()
 while not api.exit:
     time.sleep(0.05)
-    command = geofence.run()
-    command()
+    # Not considering time, or scheduling
+    scheduler.run()
