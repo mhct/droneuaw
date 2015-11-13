@@ -23,6 +23,7 @@ class MockVehicle:
         self.gps_0 = MockGps()
         self.location = location
 
+
 def test_GeoFenceBehaviourNull():
     fence = [(0,0), (10,0), (10,10), (0,10), (0,0)]
     minimum_altitude = 10
@@ -44,3 +45,46 @@ def test_GeoFenceBehaviourOK():
     maximum_altitude = 20
     b = GeoFencingBehaviour(fence, minimum_altitude, maximum_altitude, MockVehicle("LOITER", MockLocation(1,1,11)))
     assert b.run() == SafeBehaviour.SafeBehaviour.do_nothing
+
+def test_AdaptiveFence():
+    fence = [(0,0), (10,0), (10,10), (0,10), (0,0)]
+    minimum_altitude = 10
+    maximum_altitude = 20
+    vehicle = MockVehicle("LOITER", MockLocation(1,1,11))
+
+
+    b = GeoFencingBehaviour(fence, minimum_altitude, maximum_altitude, vehicle)
+    b.set_adaptive_fence()
+
+    vehicle.velocity = [0, 0, 0]
+    assert b.run() == SafeBehaviour.SafeBehaviour.do_nothing
+
+    vehicle.velocity = [10, 10, 0]
+    assert b.run() == SafeBehaviour.SafeBehaviour.halt
+
+    vehicle.velocity = [9, 9, 0]
+    assert b.run() == SafeBehaviour.SafeBehaviour.do_nothing
+
+    vehicle.velocity = [0, 9, 0]
+    assert b.run() == SafeBehaviour.SafeBehaviour.do_nothing
+
+
+def test_FenceWithGPSError():
+    """
+    Test using GPS error has to use floating numbers, otherwise the error is never big enough to show in the test.
+    TODO improve this test to add randomness
+    """
+    fence = [(50.863862, 4.67886),(50.863613,  4.678992),(50.863613, 4.678625),(50.863789, 4.678523),(50.863862, 4.67886)]
+    minimum_altitude = 10
+    maximum_altitude = 20
+
+    gps = MockGps()
+    gps.eph = 900 # 9 meter horizontal GPS error
+
+    vehicle = MockVehicle("LOITER", MockLocation(50.863743, 4.678677,11))
+    vehicle.gps_0 = gps
+
+    b = GeoFencingBehaviour(fence, minimum_altitude, maximum_altitude, vehicle)
+    b.precision = 100
+
+    assert b.run() == SafeBehaviour.SafeBehaviour.halt

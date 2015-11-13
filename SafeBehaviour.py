@@ -23,6 +23,7 @@ class SafeScheduler:
 
     def __init__(self, behaviours_graph = {}):
         self.behaviours_graph = behaviours_graph
+        print "Initializing Scheduler"
 
     def run(self):
         """Executes each behaviour, handles behaviour communication and command execution."""

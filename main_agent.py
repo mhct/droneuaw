@@ -1,6 +1,8 @@
 __author__ = 'mario'
+from dronekit import connect
+
 import sys
-sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw')
+sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw/droneuaw')
 
 import time
 import GeoFencingBehaviour
@@ -25,12 +27,11 @@ def setup():
         time.sleep(1)
 
     print "Waiting for arming cycle completes..."
-    while not vehicle.armed and not api.exit:
-        time.sleep(1)
+    #while not vehicle.armed:
+    #    time.sleep(1)
 
 
-api             = local_connect()
-vehicle         = api.get_vehicles()[0]
+vehicle         = connect('127.0.0.1:14550', wait_ready=True)
 
 #
 # Configures the geo-fence behaviour
@@ -38,21 +39,24 @@ vehicle         = api.get_vehicles()[0]
 fence = [(51.044277, 3.718161), (51.044331, 3.718165), (51.044317, 3.718271),(51.044260, 3.718260),(51.044277, 3.718161)]
 fenceMax = 14
 fenceMin = 4
-geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax)
-battery_failsafe = BatteryFailsafeBehaviour.BatteryFailsafeBehaviour(api.get_battery())
-forward = ForwardBehaviour.ForwardBehaviour()
+geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax, vehicle)
 
-level1 = {geofence: forward,
-          battery_failsafe: forward,
-          forward: None}
+#import pdb; pdb.set_trace()
 
-scheduler = SafeBehaviour.SafeScheduler(level1)
+battery_failsafe = BatteryFailsafeBehaviour.BatteryFailsafeBehaviour(vehicle.battery, 10.5, vehicle)
+forward = ForwardBehaviour.ForwardBehaviour(vehicle)
+
+level1_behaviours = {geofence: [forward],
+          battery_failsafe: [forward],
+          forward: []}
+
+scheduler = SafeBehaviour.SafeScheduler(level1_behaviours)
 
 #
 # Execution loop of the script
 #
 setup()
-while not api.exit:
+while True:
     time.sleep(0.05)
     # Not considering time, or scheduling
     scheduler.run()

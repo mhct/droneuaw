@@ -2,7 +2,7 @@ __author__ = 'mario'
 
 import Polygonal
 import SafeBehaviour
-from droneapi.lib import VehicleMode
+from dronekit.lib import VehicleMode
 
 
 class GeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
@@ -15,15 +15,24 @@ class GeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         self.maximum_altitude = maximum_altitude
         self.precision = 300 # Generates 300 probable locations for the UAV, using the GPS uncertainty
         self.vehicle = vehicle
+        self.adaptive_fence = False
 
-    def run(self, inbox = None):
-        """Executes the behaviour, creating a Command object with the desired actions to be taken by the UAV."""
+    def set_adaptive_fence(self):
+        self.adaptive_fence = True
+
+    def run(self):
+        """Executes the behaviour, returning a message having the desired actions to be taken by the UAV."""
 
         if self.vehicle.mode.name != "BRAKE" and self.vehicle.mode.name != "ALT_HOLD" and self.vehicle.mode.name != "LAND" and self.vehicle.mode.name != "RTL":
             gps_precision_in_decimal_degrees = Polygonal.centimetersToDecimalDegrees(self.vehicle.gps_0.eph)
-            probable_drone_location = Polygonal.random_coordinates((self.vehicle.location.lat, self.vehicle.location.lon), gps_precision_in_decimal_degrees, self.precision)
+            probable_drone_locations = Polygonal.random_coordinates((self.vehicle.location.lat, self.vehicle.location.lon), gps_precision_in_decimal_degrees, self.precision)
 
-            if Polygonal.points_in_poly(probable_drone_location, self.fence) is False:
+            # Adaptive fence, predicts the location of the drone according to its velocity, after 1 second
+            if self.adaptive_fence:
+                def add_velocity(x): return (x[0] + self.vehicle.velocity[0], x[1] + self.vehicle.velocity[1])
+                probable_drone_locations = map(add_velocity, probable_drone_locations)
+
+            if Polygonal.points_in_poly(probable_drone_locations, self.fence) is False:
                 print "Broke circular fence."
                 print self.vehicle.location
                 print gps_precision_in_decimal_degrees
