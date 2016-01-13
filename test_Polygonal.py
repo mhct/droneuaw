@@ -64,6 +64,54 @@ def test_points_in_poly():
     assert Polygonal.points_in_poly(Polygonal.random_coordinates((50.863743, 4.678677), 0.000110, 200), fence) == False
 
 
+def test_random_coordinate():
+    r = 1
+
+    x = "x <- c("
+    y = "y <- c("
+
+    for i in range(1,2000):
+        p = Polygonal.random_coordinate(r)
+        x += str(p[0]) + ",\n"
+        y += str(p[1]) + ",\n"
+
+    x = x[0:len(x)-2] + ");"
+    y = y[0:len(y)-2] + ");"
+
+
+    f = open("circle.txt", 'w')
+    f.write(x)
+    f.write(y)
+    f.close()
+
+
+def test_random_coordinate_3d():
+    r = 1
+
+    x = "x <- c("
+    y = "y <- c("
+    z = "z <- c("
+
+    for i in range(1,2000):
+        p = Polygonal.random_coordinate_3d(r)
+        x += str(p[0]) + ",\n"
+        y += str(p[1]) + ",\n"
+        z += str(p[2]) + ",\n"
+
+    x = x[0:len(x)-2] + ");"
+    y = y[0:len(y)-2] + ");"
+    z = z[0:len(y)-2] + ");"
+
+    graph = "par(pty='s');plot3d(x,y,z,pch='.');"
+
+    f = open("sphere.r", 'w')
+    f.write(x)
+    f.write(y)
+    f.write(z)
+    f.write(graph)
+    f.close()
+
+
 #
 # I am running this test visually in RStudio
 # TODO fix it and check probabilities here
@@ -82,4 +130,4 @@ def test_bla():
     print x_vector
     print y_vector
 
-test_bla()
+#test_bla()

@@ -67,6 +67,25 @@ def random_coordinates(center, r, n):
     return ret
 
 #
+# Generate a list of uniformly distributed random points in a sphere surface
+#
+# @param center the center of the sphere
+# @param r the radius of the sphere
+# @param n the number of points to be generated
+#
+# @returns a list with random coordinates (x,y,z)
+#
+def random_coordinates_3d(center, r, n):
+    ret = []
+    for i in range(0, n):
+        x, y, z = center
+        xx, yy, zz = random_coordinate_3d(r)
+        ret.append((x+xx, y+yy, z + zz))
+
+    return ret
+
+
+#
 # Generate uniformly distributed random points in a circle of radius 'r'
 # Info here http://mathworld.wolfram.com/DiskPointPicking.html
 #
@@ -82,3 +101,26 @@ def random_coordinate(r):
     y = r * sqrt(radius) * sin(angle)
 
     return (x,y)
+
+#
+# Generate uniformly distributed random points in a sphere of radius 'r'
+# Info here http://mathworld.wolfram.com/SpherePointPicking.html
+#
+# @param r the radius of the sphere
+#
+# @returns a random coordinate (x,y,z) around the center (0,0,0)
+#
+def random_coordinate_3d(r):
+    x1 = random.uniform(-1, 1)
+    x2 = random.uniform(-1, 1)
+
+    x1_squared = x1 * x1
+    x2_squared = x2 * x2
+
+    if (x1_squared + x2_squared) < 1:
+        x = 2 * x1 * sqrt(1 - x1_squared - x2_squared)
+        y = 2 * x2 * sqrt(1 - x1_squared - x2_squared)
+        z = 1 - 2 * (x1_squared + x2_squared)
+        return (r*x,r*y,r*z)
+    else:
+        return random_coordinate_3d(r)

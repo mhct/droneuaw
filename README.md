@@ -1,4 +1,6 @@
 # droneuaw
+https://travis-ci.org/mhct/droneuaw.svg?branch=master
+
 Dronekit.IO scripts to add safety behaviour to UAVs
 
 This software is intended to be used in conjunction with MAVProxy.
