@@ -33,7 +33,7 @@ class FakeForwardBehaviour:
 
 
 def test_scheduler1():
-    level1 = {ForwardBehaviour.ForwardBehaviour(): []}
+    level1 = {ForwardBehaviour.ForwardBehaviour(True): []}
 
     scheduler = SafeBehaviour.SafeScheduler(level1)
     scheduler.run()

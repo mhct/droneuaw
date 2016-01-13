@@ -8,9 +8,9 @@ import SafeBehaviour
 
 class ForwardBehaviour(SafeBehaviour.SafeBehaviour):
     """
-    Defines a battery failsafe behaviour.
+    Defines an aggregation behaviour.
 
-    This behaviour detects if the batter is below a certain threshold and starts landing.
+    This behaviour receives a number of messages and decides which command to execute.
     """
 
     def __init__(self, vehicle):

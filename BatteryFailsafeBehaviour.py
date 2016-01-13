@@ -6,7 +6,7 @@ class BatteryFailsafeBehaviour(SafeBehaviour.SafeBehaviour):
     """
     Defines a battery failsafe behaviour.
 
-    This behaviour detects if the batter is below a certain threshold and starts landing.
+    If the battery is below a certain threshold, the behaviour sends a message requesting to land.
     """
 
     def __init__(self, battery, minimum_voltage, vehicle):

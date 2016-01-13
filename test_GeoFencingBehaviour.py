@@ -2,6 +2,8 @@ __author__ = 'mario'
 
 import SafeBehaviour
 from GeoFencingBehaviour import GeoFencingBehaviour
+import math
+
 
 class MockMode:
     def __init__(self, name):
@@ -85,6 +87,17 @@ def test_FenceWithGPSError():
     vehicle.gps_0 = gps
 
     b = GeoFencingBehaviour(fence, minimum_altitude, maximum_altitude, vehicle)
-    b.precision = 100
+    b.precision = 700
 
-    assert b.run() == SafeBehaviour.SafeBehaviour.halt
+    #
+    # We want to receive a halt message with a certainty greater than 99%
+    #
+    certainty = 0.9
+    accumulated_halts = 0
+    runs = 1000
+    for i in range(1,runs):
+        if b.run() == SafeBehaviour.SafeBehaviour.halt:
+            accumulated_halts = accumulated_halts + 1
+
+
+    assert (accumulated_halts/float(runs)) >= certainty

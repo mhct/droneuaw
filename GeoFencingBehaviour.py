@@ -21,7 +21,7 @@ class GeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         self.adaptive_fence = True
 
     def run(self):
-        """Executes the behaviour, returning a message having the desired actions to be taken by the UAV."""
+        """Executes the geo-fencing behaviour, returning a message either (halt, do_nothing)."""
 
         if self.vehicle.mode.name != "BRAKE" and self.vehicle.mode.name != "ALT_HOLD" and self.vehicle.mode.name != "LAND" and self.vehicle.mode.name != "RTL":
             gps_precision_in_decimal_degrees = Polygonal.centimetersToDecimalDegrees(self.vehicle.gps_0.eph)

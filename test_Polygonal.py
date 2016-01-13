@@ -9,17 +9,21 @@ fence = [(50.863862, 4.67886),(50.863613,  4.678992),(50.863613, 4.678625),(50.8
 
 
 def test_point_in_poly():
-    pointX = 50.863743
-    pointY = 4.678677
-    fence = [(46.270088180220725, 5.184173583984375), (46.322274857040256, 5.33111572265625), (46.323223245368716, 5.42449951171875), (46.283376780187226, 5.447845458984375), (46.249199583637726, 5.384674072265625), (46.270088180220725, 5.184173583984375)]
+    pointX = 46.27007
+    pointY = 5.188
+    fence = [(46.270088180220725, 5.184173583984375),
+             (46.322274857040256, 5.33111572265625),
+             (46.323223245368716, 5.42449951171875),
+             (46.283376780187226, 5.447845458984375),
+             (46.249199583637726, 5.384674072265625)]
 
-    assert True == Polygonal.point_in_poly(pointX, pointY, fence)
+    assert Polygonal.point_in_poly(pointX, pointY, fence) == True
 
 def test_point_outside():
     pointX = 50.863777
     pointY = 4.679216
 
-    assert False == Polygonal.point_in_poly(pointX, pointY, fence)
+    assert Polygonal.point_in_poly(pointX, pointY, fence) == False
 
 def test_cm_to_dd_basic():
     cm = 11.132
@@ -32,7 +36,7 @@ def test_cm_to_dd_big1():
 def test_from_flight1():
     lat=50.863831
     lon=4.6788333
-    assert True == Polygonal.point_in_poly(lat, lon, fence)
+    assert Polygonal.point_in_poly(lat, lon, fence) == True
 
 #     lat=50.863831
 #     lon=4.6788333,alt=8.48999977112,is_relative=False
@@ -49,15 +53,15 @@ def test_from_flight1():
 
 def test_points_in_poly():
     fence = [(50.863862, 4.678861),(50.863613,  4.678992),(50.863613, 4.678625),(50.863809, 4.678590),(50.863862, 4.678861)]
-    assert False == Polygonal.points_in_poly(Polygonal.random_coordinates((0,0), 0.000001, 100), fence)
+    assert Polygonal.points_in_poly(Polygonal.random_coordinates((0,0), 0.000001, 100), fence) == False
 
 def test_points_in_poly():
     fence = [(50.863862, 4.678861),(50.863613,  4.678992),(50.863613, 4.678625),(50.863809, 4.678590),(50.863862, 4.678861)]
-    assert True == Polygonal.points_in_poly(Polygonal.random_coordinates((50.863743, 4.678677), 0.000001, 100), fence)
+    assert Polygonal.points_in_poly(Polygonal.random_coordinates((50.863743, 4.678677), 0.000001, 100), fence) == True
 
 def test_points_in_poly():
     fence = [(50.863862, 4.678861),(50.863613,  4.678992),(50.863613, 4.678625),(50.863809, 4.678590),(50.863862, 4.678861)]
-    assert False == Polygonal.points_in_poly(Polygonal.random_coordinates((50.863743, 4.678677), 0.000110, 200), fence)
+    assert Polygonal.points_in_poly(Polygonal.random_coordinates((50.863743, 4.678677), 0.000110, 200), fence) == False
 
 
 #
