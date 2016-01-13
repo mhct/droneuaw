@@ -40,15 +40,23 @@ fence = [(51.044277, 3.718161), (51.044331, 3.718165), (51.044317, 3.718271),(51
 fenceMax = 14
 fenceMin = 4
 geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax, vehicle)
+forward = ForwardBehaviour.ForwardBehaviour(vehicle)
 
 #import pdb; pdb.set_trace()
 
-battery_failsafe = BatteryFailsafeBehaviour.BatteryFailsafeBehaviour(vehicle.battery, 10.5, vehicle)
-forward = ForwardBehaviour.ForwardBehaviour(vehicle)
+level1_behaviours = {geofence: [forward]}
 
-level1_behaviours = {geofence: [forward],
-          battery_failsafe: [forward],
-          forward: []}
+
+if hasattr(vehicle, "battery") == True:
+    battery_failsafe = BatteryFailsafeBehaviour.BatteryFailsafeBehaviour(vehicle.battery, 10.5, vehicle)
+    level1_behaviours[battery_failsafe] = [forward]
+
+
+level1_behaviours[forward] = []
+
+# level1_behaviours = {geofence: [forward],
+#           battery_failsafe: [forward],
+#           forward: []}
 
 scheduler = SafeBehaviour.SafeScheduler(level1_behaviours)
 
