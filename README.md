@@ -1,3 +1,5 @@
+[![Travis CI](https://api.travis-ci.org/mhct/droneuaw.png)](https://travis-ci.org/mhct/droneuaw)
+
 # droneuaw
 https://travis-ci.org/mhct/droneuaw.svg?branch=master
 
