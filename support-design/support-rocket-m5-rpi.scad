@@ -63,8 +63,8 @@ difference() {
 
 }
 
-translate([0,160,0]) rotate([90,0,0]) bridge(true);
-translate([10,130,24]) rotate([-90,0,0]) bridge(true);
+translate([0,160,-13.5]) rotate([90,0,0]) bridge(true);
+translate([10,130,10.5]) rotate([-90,0,0]) bridge(true);
 
 module measureCheck() {
     color([1.0,0,0], 1) {
