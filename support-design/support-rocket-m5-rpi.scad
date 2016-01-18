@@ -17,17 +17,17 @@ module holefixer() {
 
 module bridge(covered = false) {
     color([1,1,1],1) {
-        translate([0,44,0]) rotate([0,-90,0]) union() {
+        translate([0,0,0]) rotate([0,-90,0]) union() {
             cube([37, 24, 3]);
             translate([0,6,0]) cube([15, 12, 5]);
         }
         
-        translate([76,44,0]) rotate([0,-90,0]) union() {
+        translate([76,0,0]) rotate([0,-90,0]) union() {
             cube([37, 24, 3]);
             translate([0,6,-2]) cube([15, 12, 5]);
         }
         if (covered == true) {
-            translate([-3, 44, 37]) cube([79,24,3]);    
+            translate([-3, 0, 37]) cube([79,24,3]);    
         }
     }
 }
@@ -36,9 +36,9 @@ $fn=100;
 difference() {
     union() {
         tickness = 3;
-        cube([74, 107, tickness]);
-        translate([0,-33,0]) bridge(true);
-        translate([0,28,0]) bridge(true);
+        cube([73, 107, tickness]);
+        //translate([0,13,0]) bridge(true);
+        //translate([0,60,0]) bridge(true);
         
         translate([-6,40,1.5]) holefixer();
         translate([-2,35,1.5]) cube([6, 10, 3], center=false);  //support to make outside wings stronger
@@ -63,6 +63,8 @@ difference() {
 
 }
 
+translate([0,160,0]) rotate([90,0,0]) bridge(true);
+translate([10,130,24]) rotate([-90,0,0]) bridge(true);
 
 module measureCheck() {
     color([1.0,0,0], 1) {
