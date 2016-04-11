@@ -6,9 +6,11 @@ sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw/droneuaw')
 
 import time
 import GeoFencingBehaviour
+import IndoorGeoFencingBehaviour
 import BatteryFailsafeBehaviour
 import ForwardBehaviour
 import SafeBehaviour
+from  virtualenvironment.Server import HttpServer
 
 # import threading
 
@@ -36,10 +38,19 @@ vehicle         = connect('127.0.0.1:14550', wait_ready=True)
 #
 # Configures the geo-fence behaviour
 #
-fence = [(51.044277, 3.718161), (51.044331, 3.718165), (51.044317, 3.718271),(51.044260, 3.718260),(51.044277, 3.718161)]
-fenceMax = 14
-fenceMin = 4
-geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax, vehicle)
+# fence = [(51.044277, 3.718161), (51.044331, 3.718165), (51.044317, 3.718271),(51.044260, 3.718260),(51.044277, 3.718161)]
+# fenceMax = 14
+# fenceMin = 4
+# geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax, vehicle)
+
+app = HttpServer.app
+app.config['TESTING'] = False
+server_name = "127.0.0.1:7000"
+URL = "http://" + server_name
+app.config['SERVER_NAME'] = server_name
+
+geofence = IndoorGeoFencingBehaviour.IndoorGeoFencingBehaviour(HttpServer._virtual_environment, minimum_altitude=0.0, maximum_altitude=4.0, vehicle)
+
 forward = ForwardBehaviour.ForwardBehaviour(vehicle)
 
 #import pdb; pdb.set_trace()
