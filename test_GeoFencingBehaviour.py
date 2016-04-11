@@ -103,33 +103,3 @@ def test_FenceWithGPSError():
     assert (accumulated_halts/float(runs)) >= certainty
 
 
-def test_FenceWithGPSError():
-    """
-    Test using GPS error has to use floating numbers, otherwise the error is never big enough to show in the test.
-    TODO improve this test to add randomness
-    """
-    fence = [(50.863862, 4.67886),(50.863613,  4.678992),(50.863613, 4.678625),(50.863789, 4.678523),(50.863862, 4.67886)]
-    minimum_altitude = 10
-    maximum_altitude = 20
-
-    gps = MockGps()
-    gps.eph = 900 # 9 meter horizontal GPS error
-
-    vehicle = MockVehicle("LOITER", MockLocation(50.863743, 4.678677,11))
-    vehicle.gps_0 = gps
-
-    b = GeoFencingBehaviour(fence, minimum_altitude, maximum_altitude, vehicle)
-    b.precision = 700
-
-    #
-    # We want to receive a halt message with a certainty greater than 99%
-    #
-    certainty = 0.9
-    accumulated_halts = 0
-    runs = 1000
-    for i in range(1,runs):
-        if b.run() == SafeBehaviour.SafeBehaviour.halt:
-            accumulated_halts = accumulated_halts + 1
-
-
-    assert (accumulated_halts/float(runs)) >= certainty
