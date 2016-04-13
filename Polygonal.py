@@ -1,3 +1,4 @@
+from virtualenvironment.Server.Helper import Point
 __author__ = 'mario'
 
 import random
@@ -80,7 +81,7 @@ def random_coordinates_3d(center, r, n):
     for i in range(0, n):
         x, y, z = center
         xx, yy, zz = random_coordinate_3d(r)
-        ret.append((x+xx, y+yy, z + zz))
+        ret.append(Point(x+xx, y+yy, z + zz))
 
     return ret
 

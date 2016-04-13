@@ -13,7 +13,7 @@ class GeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         self.fence = fence
         self.minimum_altitude = minimum_altitude
         self.maximum_altitude = maximum_altitude
-        self.precision = 300 # Generates 300 probable locations for the UAV, using the GPS uncertainty
+        self.precision = 200 # Generates 300 probable locations for the UAV, using the GPS uncertainty
         self.vehicle = vehicle
         self.adaptive_fence = False
 
