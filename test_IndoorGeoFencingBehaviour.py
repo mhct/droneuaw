@@ -86,7 +86,7 @@ def test_outside_virtual_environment():
 def test_adaptive_fence_standing_still():
     virtual_env = VirtualEnvironment(MapParams(MapWidth(50,50), CellSize(100,100)))
 
-    drone_location = MockLocation(5, 5, 5);
+    drone_location = MockLocation(4.9, 4.9, 5);
     b = IndoorGeoFencingBehaviour(virtual_env, 0, 10000, MockVehicle("RTL", drone_location))
     b.set_adaptive_fence()
     assert b.run() == SafeBehaviour.SafeBehaviour.do_nothing
@@ -94,8 +94,8 @@ def test_adaptive_fence_standing_still():
 def test_adaptive_fence_standing_still_near_boundary():
     virtual_env = VirtualEnvironment(MapParams(MapWidth(50,50), CellSize(100,100)))
 
-    drone_location = MockLocation(0, 0, 5);
-    b = IndoorGeoFencingBehaviour(virtual_env, 0, 10000, MockVehicle("RTL", drone_location), 1, 1000)
+    drone_location = MockLocation(4.999, 4.9, 5);
+    b = IndoorGeoFencingBehaviour(virtual_env, 0, 10000, MockVehicle("RTL", drone_location), 10, 1)
     b.set_adaptive_fence()
-    assert b.run() == SafeBehaviour.SafeBehaviour.do_nothing
+    assert b.run() == SafeBehaviour.SafeBehaviour.halt
     

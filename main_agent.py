@@ -2,7 +2,7 @@ __author__ = 'mario'
 from dronekit import connect
 
 import sys
-sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw/droneuaw')
+# sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw/droneuaw')
 
 import time
 import GeoFencingBehaviour
@@ -49,7 +49,7 @@ server_name = "127.0.0.1:7000"
 URL = "http://" + server_name
 app.config['SERVER_NAME'] = server_name
 
-geofence = IndoorGeoFencingBehaviour.IndoorGeoFencingBehaviour(HttpServer._virtual_environment, minimum_altitude=0.0, maximum_altitude=4.0, vehicle)
+geofence = IndoorGeoFencingBehaviour.IndoorGeoFencingBehaviour(HttpServer._virtual_environment, minimum_altitude=0.0, maximum_altitude=4000, vehicle)
 
 forward = ForwardBehaviour.ForwardBehaviour(vehicle)
 
