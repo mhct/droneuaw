@@ -15,10 +15,10 @@ class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         :param virtual_environment: the object representing the virtual environment
         :type virtual_environment: VirtualEnvironment
         
-        :param minimum_altitude: the minimum altitude the drone is allowed to fly inside the geo-fence
+        :param minimum_altitude: the minimum altitude the drone is allowed to fly inside the geo-fence in Milimeters
         :type minimum_altitude: float
         
-        :param maximum_altitude: the maximum altitude the drone is allowed to fly inside the geo-fence
+        :param maximum_altitude: the maximum altitude the drone is allowed to fly inside the geo-fence in Milimeters 
         :type maximum_altitude: float
         
         :param vehicle: the object representing the vehicle, containing attitude information
@@ -37,8 +37,8 @@ class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         self._virtual_environment = virtual_environment
         self.minimum_altitude = minimum_altitude
         self.maximum_altitude = maximum_altitude
-        self.error_margin = 0.1 #FIXME add to constructor parameter
-        self.precision = 200 # FIXME add to contructor parameter. Generates 1 probable locations for the UAV
+        self.error_margin = error_margin #FIXME add to constructor parameter
+        self.precision = precision # FIXME add to contructor parameter. Generates 1 probable locations for the UAV
         self.vehicle = vehicle
         self.adaptive_fence = False
         self.current_time = datetime.now()
@@ -99,18 +99,5 @@ class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
                 command = SafeBehaviour.SafeBehaviour.halt
                 break
                 
-
-#         if (self.vehicle.location.alt - self.maximum_altitude) < -0.01 and (self.vehicle.location.alt - self.minimum_altitude) > 0.01:
-#             try:
-#                 if self._virtual_environment.is_occupied(Point(self.vehicle.location.lat, 
-#                                                                self.vehicle.location.lon, 
-#                                                                self.vehicle.location.alt)) is True:
-#                     command = SafeBehaviour.SafeBehaviour.halt
-#                 else:
-#                     command = SafeBehaviour.SafeBehaviour.do_nothing
-#             except: 
-#                     command = SafeBehaviour.SafeBehaviour.halt
-#         else:
-#             command = SafeBehaviour.SafeBehaviour.halt
 
         return command
