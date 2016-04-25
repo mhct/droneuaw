@@ -3,6 +3,7 @@ __author__ = 'mario'
 
 import SafeBehaviour
 from virtualenvironment.Server.Helper import Point
+from datetime import datetime
 
 class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
     """Defines a Indoors geo-fencing behaviour, not allowing the agent to fly in occupied areas"""
@@ -40,10 +41,23 @@ class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         self.precision = 200 # FIXME add to contructor parameter. Generates 1 probable locations for the UAV
         self.vehicle = vehicle
         self.adaptive_fence = False
+        self.current_time = datetime.now()
+        self.x = 0.0
+        self.y = 0.0
+        
 
     def set_adaptive_fence(self):
         self.adaptive_fence = True
 
+    
+    def read_updated_location(self):
+        """Calculates current location given a certain drone speed"""
+        temp_now = datetime.now()
+        time_delta = (temp_now - self.current_time).
+        datetime.microsecond.
+        self.x = self.x + self.vehicle.velocity[0] 
+        self.y = self.y + self.vehicle.velocity[1]
+        
     def run(self):
         """Executes the geo-fencing behaviour, returning a message either (halt, do_nothing)."""
 
@@ -53,8 +67,9 @@ class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         
         probable_drone_locations = []
                 
+        vehicle_location = read_updated_location()
         # location of vehicle in milimeters MM
-        vehicle_location = Point(self.vehicle.location.lat*1000, self.vehicle.location.lon*1000, self.vehicle.location.alt*1000)
+#         vehicle_location = Point(self.vehicle.location.lat*1000, self.vehicle.location.lon*1000, self.vehicle.location.alt*1000)
         
 
         # Adaptive fence, predicts the location of the drone according to its velocity, after 1 second
