@@ -21,10 +21,14 @@ class BroadcastLocationBehaviour(SafeBehaviour.SafeBehaviour):
         """
         
         if self.i % 5 == 0:
-            current_location = self.location.get_latest_location()
-            location_data = json.dumps({'type': 'Point', 'coordinates': [current_location[0]*1000, current_location[1]*1000, current_location[2]*1000]})
-            requests.post(self.server_url, location_data)
-        
+            try:
+                current_location = self.location.get_latest_location()
+                ## sned the location in milimeters
+                location_data = json.dumps({'type': 'Point', 'coordinates': [current_location[0]*1000, current_location[1]*1000, current_location[2]*1000]})
+                requests.post(self.server_url, location_data)
+            except:
+                pass
+            
         self.i = self.i + 1
         return SafeBehaviour.SafeBehaviour.do_nothing
 
