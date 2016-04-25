@@ -1,5 +1,6 @@
 __author__ = 'mario'
 
+from BroadcastLocationBehaviour import BroadcastLocationBehaviour
 from IndoorLocation import IndoorLocation
 import thread
 from dronekit import connect
@@ -47,6 +48,7 @@ vehicle         = connect('/dev/tty.usbmodem1', wait_ready=True)
 # fenceMin = 4
 # geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax, vehicle)
 
+map_server_url = "http://127.0.0.1:5000/drones/1/locations" #FIXME add as configuration option
 #
 # Configures and starts HTTP SERVER
 #
@@ -65,14 +67,18 @@ thread.start_new_thread(flaskThread,())
 
 
 location = IndoorLocation(vehicle)
-geofence = IndoorGeoFencingBehaviour.IndoorGeoFencingBehaviour(HttpServer._virtual_environment, minimum_altitude=0.0, maximum_altitude=4000, vehicle=vehicle, location=location)
 
+#
+# behaviours
+#
+geofence = IndoorGeoFencingBehaviour.IndoorGeoFencingBehaviour(HttpServer._virtual_environment, minimum_altitude=0.0, maximum_altitude=4000, vehicle=vehicle, location=location)
+location_broadcast = BroadcastLocationBehaviour(map_server_url, location)
 forward = ForwardBehaviour.ForwardBehaviour(vehicle)
 
 #import pdb; pdb.set_trace()
 
 level1_behaviours = {geofence: [forward]}
-
+level1_behaviours[location_broadcast] = [forward]
 
 if hasattr(vehicle, "battery") == True:
     battery_failsafe = BatteryFailsafeBehaviour.BatteryFailsafeBehaviour(vehicle.battery, 10.5, vehicle)
