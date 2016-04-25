@@ -5,13 +5,16 @@ module holefixer() {
     // the center of the hole is at x=12,y=12
     difference() {
     union() {
-        tickness = 3;
-        cube([12, 10, tickness], center=true);
-        translate([0,0,-15]) cylinder(h=16, r=3, center=false, $fn=100);            
-    }    
-            translate([0,0,-20]) cylinder(h=30, r=2, center=false, $fn=100);
-            
+        tickness = 8;
+
+        difference() {
+            cube([14, 8, tickness], center=true);
+            translate([-8, -5, 0]) cube([16, 10, 10], center=false);
         }
+        translate([0,0,-15]) cylinder(h=11, r=3, center=false, $fn=100);            
+    }    
+        translate([0,0,-20]) cylinder(h=30, r=2, center=false, $fn=100);
+    }
 
 }
 
@@ -46,20 +49,21 @@ difference() {
         translate([69,35,1.5]) cube([6, 10, 3], center=false); //support to make outside wings stronger
         
 
-       translate([31.5, 44, 0]) cube([10, 4, 10], center=false);
-       translate([26.5, 103, 0]) cube([20, 4, 10], center=false);
-       translate([66, 74.5, 0]) cube([4, 10, 10], center=false);
+//       translate([31.5, 44, 0]) cube([10, 4, 10], center=false);
+//       translate([26.5, 103, 0]) cube([20, 4, 10], center=false);
+//       translate([66, 74.5, 0]) cube([4, 10, 10], center=false);
     }
 
 
    translate([5.5, 7.5, 0])  cylinder(h=16, r=1.6, center=true);
    translate([14.1, -1, -1])  cube([18,16,7], center=false); // hole for ethernet card 
+   translate([20.1, 40, -1])  rotate([0,0,35]) {cube([25,20,7], center=false);} // hole for heat dissipator
    translate([64, 50, -1])  cube([6,18,7], center=false); //hole for firmware pins
 
    translate([66.3, 7.5, 0]) cylinder(h=16, r=1.6, center=true);
 
    translate([37, 75, 0]) cylinder(h=16, r=24, center=true);
-//   translate([37, 20, 0]) cylinder(h=16, r=16, center=true);
+   translate([37, 20, 0]) cylinder(h=16, r=16, center=true);
 
 }
 

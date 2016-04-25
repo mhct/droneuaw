@@ -1,39 +1,43 @@
 __author__ = 'mario'
+
+from IndoorLocation import IndoorLocation
+import thread
 from dronekit import connect
-
-import sys
-# sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw/droneuaw')
-
 import time
-import GeoFencingBehaviour
 import IndoorGeoFencingBehaviour
 import BatteryFailsafeBehaviour
 import ForwardBehaviour
 import SafeBehaviour
 from  virtualenvironment.Server import HttpServer
 
+# import sys
+# sys.path.insert(0, '/Users/mario/PycharmProjects/droneuaw/droneuaw')
 # import threading
 
-def setup():
+def setup(useGPS=False, waitArming=False):
     """Checks if vehicle is ready to execute script commands."""
-    print "Waiting for GPS..."
-    while vehicle.gps_0.fix_type < 2:
-        # gps_0.fix_type:
-        # 0-1: no fix
-        # 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK
-        # check https://pixhawk.ethz.ch/mavlink/#GPS_RAW_INT
-        time.sleep(1)
+    
+    if useGPS:
+        while vehicle.gps_0.fix_type < 2:
+            print "Waiting for GPS..."
+            # gps_0.fix_type:
+            # 0-1: no fix
+            # 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK
+            # check https://pixhawk.ethz.ch/mavlink/#GPS_RAW_INT
+            time.sleep(1)
 
-    print "Waiting for location..."
     while vehicle.location.alt == 0.0:
+        print "Waiting for location..."
         time.sleep(1)
 
-    print "Waiting for arming cycle completes..."
-    #while not vehicle.armed:
-    #    time.sleep(1)
+    if waitArming:
+        while not vehicle.armed:
+            print "Waiting for arming cycle completes..."
+            time.sleep(1)
 
 
-vehicle         = connect('127.0.0.1:14550', wait_ready=True)
+# vehicle         = connect('127.0.0.1:14550', wait_ready=True)
+vehicle         = connect('/dev/tty.usbmodem1', wait_ready=True)
 
 #
 # Configures the geo-fence behaviour
@@ -43,13 +47,25 @@ vehicle         = connect('127.0.0.1:14550', wait_ready=True)
 # fenceMin = 4
 # geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax, vehicle)
 
+#
+# Configures and starts HTTP SERVER
+#
 app = HttpServer.app
 app.config['TESTING'] = False
 server_name = "127.0.0.1:7000"
 URL = "http://" + server_name
 app.config['SERVER_NAME'] = server_name
+def flaskThread():
+    app.run()
+    
+thread.start_new_thread(flaskThread,())
+#
+# end configuration HTTPServer
+#
 
-geofence = IndoorGeoFencingBehaviour.IndoorGeoFencingBehaviour(HttpServer._virtual_environment, minimum_altitude=0.0, maximum_altitude=4000, vehicle)
+
+location = IndoorLocation(vehicle)
+geofence = IndoorGeoFencingBehaviour.IndoorGeoFencingBehaviour(HttpServer._virtual_environment, minimum_altitude=0.0, maximum_altitude=4000, vehicle=vehicle, location=location)
 
 forward = ForwardBehaviour.ForwardBehaviour(vehicle)
 
@@ -75,7 +91,20 @@ scheduler = SafeBehaviour.SafeScheduler(level1_behaviours)
 # Execution loop of the script
 #
 setup()
+i=0
 while True:
     time.sleep(0.05)
+    if HttpServer.get_reset_pose():
+        print "reset location received"
+        location.reset_location()
+        HttpServer.set_reset_pose_false()
+        print location.get_latest_location()
+        
     # Not considering time, or scheduling
     scheduler.run()
+    
+    if i%100 == 0:
+        print location.get_latest_location()
+    i = i + 1
+        
+

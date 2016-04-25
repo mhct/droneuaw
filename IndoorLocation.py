@@ -1,4 +1,3 @@
-import Polygonal
 __author__ = 'mario'
 
 from virtualenvironment.Server.Helper import Point
@@ -24,17 +23,21 @@ class IndoorLocation():
         
         self.vehicle = vehicle
         self.reset_location()
-        self.previous_time = datetime.now()
-
     
     def reset_location(self):
         """ Resets the current location used in the vehicle."""
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
+        self.previous_time = datetime.now()
+        
     
     def run(self):
-        """Updates the location, given the average velocities of the vehicle"""
+        """Updates the location, given the average velocities of the vehicle
+        
+        :return location: current location [x,y,z] of the vehicle in meters (m) 
+        :type Point:
+        """
         current_time = datetime.now()
         time_delta = (current_time - self.previous_time).total_seconds()
         
@@ -52,3 +55,8 @@ class IndoorLocation():
         
         self.previous_time = current_time
         return Point(self.x, self.y, self.z)
+    
+    def get_latest_location(self):
+        """Returns the latest location calculated by this class"""
+        return (self.x, self.y, self.z)
+    

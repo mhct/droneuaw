@@ -1,14 +1,14 @@
 import Polygonal
+import IndoorLocation
 __author__ = 'mario'
 
 import SafeBehaviour
 from virtualenvironment.Server.Helper import Point
-from datetime import datetime
 
 class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
     """Defines a Indoors geo-fencing behaviour, not allowing the agent to fly in occupied areas"""
 
-    def __init__(self, virtual_environment, minimum_altitude, maximum_altitude, vehicle, error_margin = 0.1, precision = 1):
+    def __init__(self, virtual_environment=None, minimum_altitude=0.0, maximum_altitude=5.0, vehicle=None, error_margin = 0.1, precision = 1, location=None):
         """
         Creates the behaviour for flying inside a indoors geo-fence
         
@@ -29,6 +29,9 @@ class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         
         :param precision: number of coordinates to be generated to estimate the REAL location of the vehicle
         :type precision: int
+        
+        :param location: the object representing the location of the drone
+        :type location: Point
         """
         if virtual_environment is None:
             raise "VirtualEnvironment can not be None."
@@ -41,33 +44,21 @@ class IndoorGeoFencingBehaviour(SafeBehaviour.SafeBehaviour):
         self.precision = precision # FIXME add to contructor parameter. Generates 1 probable locations for the UAV
         self.vehicle = vehicle
         self.adaptive_fence = False
-        self.current_time = datetime.now()
-        self.x = 0.0
-        self.y = 0.0
-        
+        self.location = location
 
     def set_adaptive_fence(self):
         self.adaptive_fence = True
 
-    
-    def read_updated_location(self):
-        """Calculates current location given a certain drone speed"""
-        temp_now = datetime.now()
-        time_delta = (temp_now - self.current_time).
-        datetime.microsecond.
-        self.x = self.x + self.vehicle.velocity[0] 
-        self.y = self.y + self.vehicle.velocity[1]
-        
     def run(self):
         """Executes the geo-fencing behaviour, returning a message either (halt, do_nothing)."""
-
         # TODO state machine for steering the drone away from forbiden zones
         # return SafeBehaviour.SafeBehaviour.halt
         command = SafeBehaviour.SafeBehaviour.none
         
         probable_drone_locations = []
                 
-        vehicle_location = read_updated_location()
+        vehicle_location = self.location.run()
+        vehicle_location = Point(vehicle_location[0]*1000, vehicle_location[1]*1000, vehicle_location[2] * 1000)
         # location of vehicle in milimeters MM
 #         vehicle_location = Point(self.vehicle.location.lat*1000, self.vehicle.location.lon*1000, self.vehicle.location.alt*1000)
         
