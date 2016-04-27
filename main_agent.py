@@ -38,7 +38,8 @@ def setup(useGPS=False, waitArming=False):
 
 
 # vehicle         = connect('127.0.0.1:14550', wait_ready=True)
-vehicle         = connect('/dev/tty.usbmodem1', wait_ready=True)
+#vehicle         = connect('/dev/tty.usbmodem1', wait_ready=True)
+vehicle         = connect('/dev/ttyAMA0', baud=57600, wait_ready=True)
 
 #
 # Configures the geo-fence behaviour
@@ -48,13 +49,13 @@ vehicle         = connect('/dev/tty.usbmodem1', wait_ready=True)
 # fenceMin = 4
 # geofence = GeoFencingBehaviour.GeoFencingBehaviour(fence, fenceMin, fenceMax, vehicle)
 
-map_server_url = "http://127.0.0.1:5000/drones/1/locations" #FIXME add as configuration option
+map_server_url = "http://192.168.1.3:5000/drones/1/locations" #FIXME add as configuration option
 #
 # Configures and starts HTTP SERVER
 #
 app = HttpServer.app
 app.config['TESTING'] = False
-server_name = "127.0.0.1:7000"
+server_name = "localhost:7000"
 URL = "http://" + server_name
 app.config['SERVER_NAME'] = server_name
 def flaskThread():
